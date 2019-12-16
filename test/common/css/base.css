@@ -1,0 +1,10 @@
+body{
+	font-size: 62.5%;
+}
+html,body,view,text,input,textarea,image{
+	padding:0;
+	margin: 0;
+}
+.flex{
+	display: flex;
+}
