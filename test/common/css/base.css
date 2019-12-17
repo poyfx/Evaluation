@@ -1,10 +1,19 @@
-body{
+body,html{
 	font-size: 62.5%;
 }
 html,body,view,text,input,textarea,image{
 	padding:0;
 	margin: 0;
+	box-sizing: border-box;
+}
+body{
+		background-color: #F6F7F9;
+		height: 100vh;
+		color: #303132;
 }
 .flex{
 	display: flex;
+}
+.border_bottom{
+	border-bottom: 1px solid #EDEFF1;
 }

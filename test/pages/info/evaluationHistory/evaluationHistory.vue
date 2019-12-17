@@ -1,8 +1,8 @@
 <template>
 	<view class="index">
-		<titles :titles="titles" ></titles>
+		<titles :titles="titles" :showIcon="true"></titles>
 		<view class="index_content">
-			<view class="index_list" @tap="staff">
+			<view class="index_list" @tap="bestStaff">
 				<view class="list_title">
 					<text>优秀员工评选</text>
 				</view>
@@ -17,11 +17,11 @@
 					</view>
 				</view>
 				<view class="list_time flex">
-					<text>截止时间 &nbsp;&nbsp;2019-112-27 &nbsp;&nbsp;20：00</text>
+					<text>提交时间 &nbsp;&nbsp;2019-112-27 &nbsp;&nbsp;20：00</text>
 				</view>
 			</view>
 			
-			<view class="index_list" @tap="evaluation">
+			<view class="index_list" @tap="assessmentStall">
 				<view class="list_title">
 					<text>2019年员工考核互评</text>
 				</view>
@@ -36,11 +36,11 @@
 					</view>
 				</view>
 				<view class="list_time flex">
-					<text>截止时间 &nbsp;&nbsp;2019-112-27 &nbsp;&nbsp;20：00</text>
+					<text>提交时间 &nbsp;&nbsp;2019-112-27 &nbsp;&nbsp;20：00</text>
 				</view>
 			</view>
 			
-			<view class="index_list" @tap="evaluation">
+			<view class="index_list" >
 				<view class="list_title">
 					<text>2019年员工考核他评</text>
 				</view>
@@ -55,7 +55,7 @@
 					</view>
 				</view>
 				<view class="list_time flex">
-					<text>截止时间 &nbsp;&nbsp;2019-112-27 &nbsp;&nbsp;20：00</text>
+					<text>提交时间 &nbsp;&nbsp;2019-112-27 &nbsp;&nbsp;20：00</text>
 				</view>
 			</view>
 			<view class="nomore flex">
@@ -69,21 +69,21 @@
 	export default {
 		data() {
 			return {
-				titles: '测评'
+				titles: '测评历史'
 			}
 		},
 		onLoad() {
 
 		},
 		methods: {
-			staff(){
+			bestStaff(){
 				uni.navigateTo({
-					url:'./excellentStaff/excellentStaff'
+					url:'../bestStaff/bestStaff'
 				})
 			},
-			evaluation(){
+			assessmentStall(){
 				uni.navigateTo({
-					url:'./evaluation/evaluation'
+					url:'../assessmentStall/assessmentStall'
 				})
 			},
 		}
