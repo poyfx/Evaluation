@@ -5,76 +5,147 @@
 			<view class="info_list">
 				<view class="list_box border_bottom flex">
 					<text>姓名</text>
-					<text>秦长青</text>
+					<text>{{realname}}</text>
 				</view>
-				<view class="list_box  flex">
+				<view class="list_box border_bottom  flex">
 					<text>手机</text>
-					<text>155****6936</text>
+					<text>{{mobile}}</text>
 				</view>
 			</view>
-			<view class="info_list">
-				<view class="list_box border_bottom flex">
+			<view class="info_position">
+				<view class="position">
+					公司职位：
+				</view>
+				<view class="positoin_title border_bottom flex">
 					<text>部门</text>
-					<text>人事部</text>
-				</view>
-				<view class="list_box  flex">
 					<text>职位</text>
-					<text>人事部部长</text>
+				</view>
+				<view class="positoin_content border_bottom  flex" v-for="(item, index) in position" :key="index">
+					<text>{{item.deptName}}</text>
+					<text>{{item.position}}</text>
 				</view>
 			</view>
-			
+
 			<view class="info_list">
 				<view class="list_history  flex" @tap="gohistory">
 					<text>评测历史</text>
 					<uni-icons type="arrowright" size="22"></uni-icons>
 				</view>
-				
+
+			</view>
+			<view class="info_btn">
+				<view>
+					退出登录
+				</view>
 			</view>
 		</view>
 	</view>
 </template>
 
 <script>
+	import {
+		mapState
+	} from 'vuex'
+
 	export default {
 		data() {
 			return {
-				titles:'我的'
+				titles: '我的'
 			};
 		},
-		methods:{
-			gohistory(){
+		onShow() {
+			console.log(this.position)
+		},
+
+		methods: {
+
+			gohistory() {
 				uni.navigateTo({
-					url:'/pages/info/evaluationHistory/evaluationHistory'
+					url: '/pages/info/evaluationHistory/evaluationHistory'
 				})
 			},
+		},
+		computed: {
+			...mapState(['mobile', 'position', 'realname'])
 		},
 	}
 </script>
 
 <style lang="scss">
-.info{
-	.info_content{
-		.info_list{
-			margin-top: 8px;
-			padding-left:15px ;
-			background-color: #FFFFFF;
-			.list_box{
-				padding: 12px 0 13px;
-				align-content: center;
-				align-items: center;
-				text{
-					margin-right: 20px;
+	.info {
+		.info_content {
+			.info_list {
+				margin-top: 8px;
+				padding-left: 15px;
+				background-color: #FFFFFF;
+
+				.list_box {
+					padding: 12px 0 13px;
+					align-content: center;
+					align-items: center;
+
+					text {
+						margin-right: 20px;
+						font-size: $font-size16;
+					}
+				}
+
+				.list_history {
+					padding: 12px 17px 13px 0px;
+					justify-content: space-between;
+					align-content: center;
+					align-items: center;
 					font-size: $font-size16;
 				}
 			}
-			.list_history{
-				padding: 12px 17px 13px 0px;
-				justify-content: space-between;
-				align-content: center;
-				align-items: center;
+
+			.info_position {
+				background-color: #FFFFFF;
+				padding-left: 15px;
 				font-size: $font-size16;
+				.position {
+					margin-right: 20px;
+					font-size: $font-size16;
+					padding: 12px 0 13px;
+				}
+
+				.positoin_title {
+					justify-content: center;
+
+					text {
+						width: 50%;
+						text-align: center;
+						padding: 12px 0 13px;
+						color:#BFC2CA;
+					}
+				}
+				.positoin_content{
+					justify-content: center;
+					
+					text {
+						width: 50%;
+						text-align: center;
+						padding: 12px 0 13px;
+						color: #303132;
+					}
+				}
+			}
+
+			.info_btn {
+				width: 100%;
+				margin: 80px 0 55px;
+
+				view {
+					width: 80%;
+					color: #BFC2CA;
+					background-color: #FFFFFF;
+					border-radius: 22px;
+					text-align: center;
+					margin: 0 auto;
+					line-height: 44px;
+					font-size: $font-size18;
+				}
 			}
 		}
 	}
-}
 </style>

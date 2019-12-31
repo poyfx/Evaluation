@@ -4,17 +4,17 @@
 		<titles :titles="titles" :showIcon="true"></titles>
 		<view class="staff_content">
 			<view class="staff_rule flex">
-				<text>评选规则：选择1-4个你认为的先进集体</text>
+				<text>{{content.remark}}</text>
 			</view>
 			<view class="staff_title">
 				<text>候选名单</text>
 			</view>
 			<view class="staff_check">
 				<checkbox-group @change="checkboxChange">
-					<label v-for="item in value" :key="item.id">
+					<label v-for="(item,index) in value" :key="item.id">
 						<view class="flex">
-							<checkbox :value="item.value" color="#FFFFFF" />
-							<text>{{item.value}}</text>
+							<checkbox  :value="String(item.id)" :disabled="check.length >= content.max && !check.includes(String(item.id))" color="#FFFFFF" />
+							<text>{{index+1}}、{{item.title}}</text>
 						</view>
 
 					</label>
@@ -32,14 +32,8 @@
 						您此次投票选择的是：
 					</view>
 					<view class="model_content">
-						<view class="model_list">
-							1、战略营销部
-						</view>
-						<view class="model_list">
-							1、战略营销部
-						</view>
-						<view class="model_list">
-							1、战略营销部
+						<view class="model_list" v-for="(item,index) in checkContet" :key="index">
+							{{index+1}}、{{item.title}}
 						</view>
 					</view>
 					<view class="model_btn flex">
@@ -67,92 +61,109 @@
 </template>
 
 <script>
+	import topsService from '@/api/topies.js'
 	export default {
+		
 		data() {
 			return {
 				titles: '优秀员工评选',
-				value: [{
-						value: '1、战略营销部',
-						id: 1
-					},
-					{
-						value: '2、企业发展部',
-						id: 2
-					},
-					{
-						value: '3、市场开发部',
-						id: 3
-					},
-					{
-						value: '4、财务管理部',
-						id: 4
-					},
-					{
-						value: '5、"总经理办公室（行政服务中心）"',
-						id: 5
-					},
-					{
-						value: '6、董事会办公室',
-						id: 6
-					},
-					{
-						value: '7、人力资源部',
-						id: 7
-					},
-					{
-
-						value: '8、党群工作部',
-						id: 8
-					},
-					{
-						value: '9、纪检监察室',
-						id: 9
-					},
-					{
-						value: '10、审计部',
-						id: 10
-					},
-					{
-						value: '11、招标采购部',
-						id: 11
-					},
-					{
-						value: '12、安全生产部',
-						id: 12
-					},
-					{
-						value: '13、工程管理部',
-						id: 13
-					},
-
-				],
-				currentArr: [], // 当前用户想要的选项，最大为4
-				oldArr: [], // 上一次的返回值
-				hasPass: false ,// 用户之前是否选择过，是为true
+				value: [],//页面显示list
 				model:false,
 				confirm:true,//是否显示
+				id:'',
+				topid:'',
+				check:[],//选中数组id
+				content:{
+					max:'',
+					remark:'',
+				},
+				checkContet:[],
+				options:'',//选中的id
 			};
 		},
+		onLoad(option) {
+			this.id = option.id;
+			this.topid = option.topid
+			
+			this.gettop()
+		},
+		
 		methods: {
+			gettop(){
+				console.log(this.id,this.topid)
+				topsService.getTopiesInfo({
+					dept_id:this.id,
+					topic_id:this.topid,
+					success:res=>{
+						console.log(res)
+						const data =  res.data.topic
+						if(res.statusCode == 200 && res.data.code == 0){
+							this.content.max = data.maxVote || '';
+							this.content.remark = data.remark || '';
+							this.titles = data.title || '',
+							this.value = data.optionList || '';
+						}
+					},
+					fail:err=>{
+						console.log(err)
+					},
+					complete:res=>{
+						console.log(res)
+					},
+				})
+			},
 			checkboxChange(e) {
 				console.log(e)
-				if (e.detail.value.length > 4) { // 如果选择的个数超过4个
-					uni.showToast({
-						title: '无法选择更多',
-						icon: 'none',
-						position: 'bottom',
-						duration: 3000,
+			
+				this.check = e.detail.value
+			},
+	
+			sure(){
+				if(this.check != ''){
+					this.checkContet=[];
+					console.log(this.check)
+					this.model = true;
+					this.check.map(el=>{
+						for(let i=0;i<this.value.length;i++ ){
+							console.log(el,this.value[i].id)
+							if(el == this.value[i].id){
+								this.checkContet.push(this.value[i])
+							}
+						}
+						
+					})
+				}else{
+					uni.showModal({
+						content:'请先投票'
 					})
 				}
-			},
-			sure(){
-				this.model = true;
+				
+				
 			},
 			cansels(){
 				this.model =false;
 			},
 			confirms(){
-				this.confirm = false;
+				this.options = this.check.toString()
+				
+				topsService.getVote({
+					dept_id:this.id,
+					topic_id:this.topid,
+					options:this.options,
+					success:res=>{
+						if(res.statusCode == 200 && res.data.code == 0){
+							this.confirm = false;
+						}
+					},
+					fail:err=>{
+						console.log(err)
+					},
+					complete:res=>{
+						console.log(res)
+					}
+					
+				})
+				
 			},
 			returns(){
 				uni.switchTab({

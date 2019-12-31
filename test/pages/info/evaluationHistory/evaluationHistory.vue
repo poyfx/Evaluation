@@ -2,26 +2,27 @@
 	<view class="index">
 		<titles :titles="titles" :showIcon="true"></titles>
 		<view class="index_content">
-			<view class="index_list" @tap="bestStaff">
+			<view class="index_list" @tap="bestStaff(item.type)" v-for="(item,index) in list" :key="index">
 				<view class="list_title">
-					<text>优秀员工评选</text>
+					<text>{{item.title}}</text>
 				</view>
 				<view class="list_type flex">
 					<view class="list_box flex">
 						<view>类型：</view>
-						<text class="ticket">投票</text>
+						<text class="ticket" v-show="item.type==1">投票</text>
+						<text class="assessment" v-show="item.type==2">考核</text>
 					</view>
 					<view class="list_box  flex" style="justify-content: flex-end;">
 						<view>范围：</view>
-						<text class="allcompany">全公司</text>
+						<text class="allcompany">{{item.deptName}}</text>
 					</view>
 				</view>
 				<view class="list_time flex">
 					<text>提交时间 &nbsp;&nbsp;2019-112-27 &nbsp;&nbsp;20：00</text>
 				</view>
 			</view>
-			
-			<view class="index_list" @tap="assessmentStall">
+
+			<!-- <view class="index_list" @tap="assessmentStall">
 				<view class="list_title">
 					<text>2019年员工考核互评</text>
 				</view>
@@ -57,7 +58,7 @@
 				<view class="list_time flex">
 					<text>提交时间 &nbsp;&nbsp;2019-112-27 &nbsp;&nbsp;20：00</text>
 				</view>
-			</view>
+			</view> -->
 			<view class="nomore flex">
 				没有更多了
 			</view>
@@ -66,25 +67,45 @@
 </template>
 
 <script>
+	import topsService from '@/api/topies.js'
 	export default {
 		data() {
 			return {
-				titles: '测评历史'
+				titles: '测评历史',
+				list: [],
 			}
 		},
 		onLoad() {
-
+			this.getHistory()
 		},
 		methods: {
-			bestStaff(){
-				uni.navigateTo({
-					url:'../bestStaff/bestStaff'
+			getHistory() {
+				topsService.getTopiesHis({
+					success: res => {
+						console.log(res)
+						if (res.statusCode == 200 && res.data.code == 0) {
+							this.list = res.data.topicList
+						}
+					},
+					fail: err => {
+						console.log(err)
+					},
+					complete: res => {
+						console.log(res)
+					},
 				})
 			},
-			assessmentStall(){
-				uni.navigateTo({
-					url:'../assessmentStall/assessmentStall'
-				})
+			bestStaff(type) {
+				if (type == 1) {
+					uni.navigateTo({
+						url: '../bestStaff/bestStaff'
+					})
+				} else {
+					uni.navigateTo({
+						url: '../assessmentStall/assessmentStall'
+					})
+				}
+
 			},
 		}
 	}
@@ -110,6 +131,7 @@
 				.list_type {
 					justify-content: space-between;
 					margin-bottom: 12px;
+
 					.list_box {
 						width: 50%;
 						align-content: center;
@@ -124,21 +146,25 @@
 						.ticket {
 							color: #54D29B;
 						}
-						.allcompany{
+
+						.allcompany {
 							color: #3D82FF;
 						}
-						.assessment{
+
+						.assessment {
 							color: #FE5245;
 						}
 					}
 				}
-				.list_time{
+
+				.list_time {
 					color: #BFC2CA;
 					font-size: $font-size12;
 					justify-content: flex-start;
 				}
 			}
-			.nomore{
+
+			.nomore {
 				width: 100%;
 				height: 44px;
 				justify-content: center;
