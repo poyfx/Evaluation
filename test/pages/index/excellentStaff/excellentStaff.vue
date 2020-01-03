@@ -82,8 +82,8 @@
 			};
 		},
 		onLoad(option) {
-			this.id = option.id;
-			this.topid = option.topid
+			this.id = option.topid;
+			this.topid = option.id
 			
 			this.gettop()
 		},
@@ -151,6 +151,7 @@
 					topic_id:this.topid,
 					options:this.options,
 					success:res=>{
+						console.log(res)
 						if(res.statusCode == 200 && res.data.code == 0){
 							this.confirm = false;
 						}

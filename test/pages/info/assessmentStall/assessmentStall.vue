@@ -17,22 +17,15 @@
 					您对此次考核的评分为：
 				</view>
 				<view class="evaluation_box">
-					<view class="evaluation_list flex border_bottom" @tap="all = !all">
-						<text class="list_name">设计部门</text>
-						<view class="flex">
-							<text class="">收起</text>
-							<image src="../../../static/img/triangle.png" mode="aspectFit" style="transform: rotate(90deg);"></image>
-						</view>
-					</view>
-					<view class="all_name" v-show="all">
-						<view class="name_box flex border_bottom" @tap="detailed">
-							<text class="list_name">秦泷</text>
+					<view class="all_name" >
+						<view class="name_box flex border_bottom" @tap="detailed(index)" v-for="(item,index) in list" :key="index">
+							<text class="list_name">{{item.examineeName}}</text>
 							<view class="flex">
-								总分：<text class="scope">93</text>
+								总分：<text class="scope">{{item.score}}</text>
 								<uni-icons type="arrowright" size="20"></uni-icons>
 							</view>
 						</view>
-						<view class="name_box flex border_bottom">
+						<!-- <view class="name_box flex border_bottom">
 							<text class="list_name">湘不语</text>
 							<view class="flex">
 								总分：<text class="scope">93</text>
@@ -45,41 +38,9 @@
 								总分：<text class="scope">93</text>
 								<uni-icons type="arrowright" size="20"></uni-icons>
 							</view>
-						</view>
+						</view> -->
 					</view>
 
-				</view>
-				<view class="evaluation_box">
-					<view class="evaluation_list flex border_bottom" @tap="all1 = !all1">
-						<text class="list_name">人事部门</text>
-						<view class="flex">
-							<text class="">展开</text>
-							<image src="../../../static/img/triangle.png" mode="aspectFit" ></image>
-						</view>
-					</view>
-					<view class="all_name" v-show="all1">
-						<view class="name_box flex border_bottom">
-							<text class="list_name">秦泷</text>
-							<view class="flex">
-							总分：<text class="scope">93</text>
-								<uni-icons type="arrowright" size="20"></uni-icons>
-							</view>
-						</view>
-						<view class="name_box flex border_bottom">
-							<text class="list_name">湘不语</text>
-							<view class="flex">
-								总分：<text class="scope">93</text>
-								<uni-icons type="arrowright" size="20"></uni-icons>
-							</view>
-						</view>
-						<view class="name_box flex border_bottom">
-							<text class="list_name">隆傲</text>
-							<view class="flex">
-								总分：<text class="scope">93</text>
-								<uni-icons type="arrowright" size="20"></uni-icons>
-							</view>
-						</view>
-					</view>
 				</view>
 			</view>
 			<view class="staff_btn">
@@ -92,18 +53,47 @@
 </template>
 
 <script>
+	import topsService from '@/api/topies.js'
 	export default {
 		data() {
 			return {
 				titles: '员工考核互评',
-				all1: false,
-				all: true,
+				id:'',
+				topid:'',
+				list:[],
 			};
 		},
+		onLoad(option) {
+			this.topid = option.id;
+			this.id = option.topid;
+			this.getAssessments();
+		},
 		methods:{
-			detailed(){
+			getAssessments(){
+				topsService.getHistoryList({
+					dept_id:this.id,
+					topic_id:this.topid,
+					success:res=>{
+						console.log(res)
+						if(res.statusCode == 200 && res.data.code == 0){
+							this.list = res.data.topic.examineeList;
+							uni.setStorage({
+								key:'assessments',
+								data:res.data.topic
+							})
+						}
+					},
+					fail:err=>{
+						console.log(err)
+					},
+					complete:res=>{
+						console.log(res)
+					}
+				})
+			},
+			detailed(index){
 				uni.navigateTo({
-					url:'../detailedInfo/detailedInfo'
+					url:'../detailedInfo/detailedInfo?index='+index
 				})
 			},
 			sure(){
@@ -167,41 +157,7 @@
 				.evaluation_box {
 					margin-bottom: 8px;
 
-					.evaluation_list {
-						width: 100%;
-						padding: 12px 26px 12px 16px;
-						justify-content: space-between;
-						align-content: center;
-						align-items: center;
-						background: #FFFFFF;
-
-
-						.list_name {
-							color: #303132;
-							font-size: $font-size16;
-						}
-
-						view {
-							justify-content: space-between;
-							align-content: center;
-							align-items: center;
-
-							image {
-								width: 6px;
-								height: 10px;
-								margin-left: 10px;
-							}
-
-							text {
-								color: #BFC2CA;
-								font-size: $font-size16;
-							}
-
-							.complete {
-								color: #54D29B;
-							}
-						}
-					}
+					
 
 					.all_name {
 						.name_box {

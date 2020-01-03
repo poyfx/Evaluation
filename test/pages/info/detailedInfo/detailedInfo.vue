@@ -2,60 +2,25 @@
 	<view class="appraisal">
 		<titles :titles="titles" :showIcon="true"></titles>
 		<view class="appraisal_content">
-			<view class="appraisal_list">
+			<view class="appraisal_list" v-for="(item,index) in list" :key="index">
 				<view class="list_title flex">
 					<view class="list_left">
-						1、计划和执行能力
-						<text>（权重10%）</text>
+						{{index+1}}、{{item.title}}
+						<text>（权重{{item.weight}}%）</text>
 					</view>
-					
+
 				</view>
 				<view class="list_content">
-					<text>无论是计划内还是临时交办的工作都能领会上级的意图，积极接受，制定切实可行的工作计划，迅速开展工作；对工作中可能遇到的困难和问题充分考虑，并作好处理预案；工作开展有序，有效地利用资源。</text>
+					<text>{{item.content}}</text>
 				</view>
 				<view class="list_score flex">
 					<text>评分：</text>
 					<view>
-						9.85
+						{{examineeList[index]}}
 					</view>
 				</view>
 			</view>
-			<view class="appraisal_list">
-				<view class="list_title flex">
-					<view class="list_left">
-						2、创新能力
-						<text>（权重15%）</text>
-					</view>
-					
-				</view>
-				<view class="list_content">
-					<text>无论是计划内还是临时交办的工作都能领会上级的意图，积极接受，制定切实可行的工作计划，迅速开展工作；对工作中可能遇到的困难和问题充分考虑，并作好处理预案；工作开展有序，有效地利用资源。</text>
-				</view>
-				<view class="list_score flex">
-					<text>评分：</text>
-					<view>
-						9.85
-					</view>
-				</view>
-			</view>
-			<view class="appraisal_list">
-				<view class="list_title flex">
-					<view class="list_left">
-						3、语言能力
-						<text>（权重10%）</text>
-					</view>
-				
-				</view>
-				<view class="list_content">
-					<text>无论是计划内还是临时交办的工作都能领会上级的意图，积极接受，制定切实可行的工作计划，迅速开展工作；对工作中可能遇到的困难和问题充分考虑，并作好处理预案；工作开展有序，有效地利用资源。</text>
-				</view>
-				<view class="list_score flex">
-					<text>评分：</text>
-					<view>
-						9.85
-					</view>
-				</view>
-			</view>
+			
 			<view class="staff_btn">
 				<view class="btn" @tap="sure">
 					返回
@@ -70,24 +35,43 @@
 		data() {
 			return {
 				titles: '员工考评',
-				actives:false,
-				active:'active',
-				active2:false,
-				active1:false,
+				num: '',
+				list: [],
+				examineeList:[],
 				
 			};
 		},
-		methods:{
-			focus(e){
+		onLoad(option) {
+			this.num = option.index;
+			console.log(this.num )
+			this.getAssessments()
+		},
+		methods: {
+			focus(e) {
 				console.log(e)
 				this.actives = true
 			},
-			blue(){
+			getAssessments() {
+				const assessment = uni.getStorageSync('assessment')
+				try {
+					if (assessment) {
+						console.log(assessment.examineeList)
+						this.list = assessment.optionList;
+						this.examineeList = assessment.examineeList[this.num].options.split(',');
+						console.log(this.examineeList )
+							
+					}
+				} catch (e) {
+					//TODO handle the exception
+				}
+
+			},
+			blue() {
 				this.actives = false
 			},
 			sure() {
 				uni.navigateBack({
-					delta:1
+					delta: 1
 				})
 			},
 		}
@@ -97,6 +81,7 @@
 <style lang="scss">
 	.appraisal {
 		padding-bottom: 58px;
+
 		.appraisal_content {
 
 			.appraisal_list {
@@ -120,31 +105,36 @@
 					}
 
 				}
-				.list_content{
+
+				.list_content {
 					font-size: $font-size12;
-					color:#909398 ;
+					color: #909398;
 					line-height: 18px;
 					margin-bottom: 12px;
 				}
-				.list_score{
+
+				.list_score {
 					justify-content: flex-end;
 					align-content: center;
 					align-items: center;
-					text{
+
+					text {
 						font-size: $font-size16;
 						color: #303132;
 						margin-right: 4px;
 					}
-					view{
-						color:#FE5245 ;
+
+					view {
+						color: #FE5245;
 						font-size: $font-size16;
 						display: flex;
 						align-content: center;
 						align-items: center;
 					}
-					
+
 				}
 			}
+
 			.staff_btn {
 				width: 100%;
 				padding: 9px 0;
@@ -153,7 +143,7 @@
 				left: 0;
 				background: #FFFFFF;
 				border-top: 1px solid #EDEFF1;
-			
+
 				.btn {
 					margin: 0 auto;
 					width: 90%;

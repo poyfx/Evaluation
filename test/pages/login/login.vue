@@ -129,6 +129,11 @@
 					"code": this.code,
 					success:res=>{
 						if(res.statusCode == 200 && res.data.code == 0){
+							console.log(res)
+							uni.setStorage({
+								key:'user',
+								data:res.data.user,
+							})
 							uni.switchTab({
 								url: '../index/index'
 							})

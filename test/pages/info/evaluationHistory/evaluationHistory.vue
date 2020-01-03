@@ -2,7 +2,7 @@
 	<view class="index">
 		<titles :titles="titles" :showIcon="true"></titles>
 		<view class="index_content">
-			<view class="index_list" @tap="bestStaff(item.type)" v-for="(item,index) in list" :key="index">
+			<view class="index_list" @tap="bestStaff(item.type,item.id,item.deptId)" v-for="(item,index) in list" :key="index">
 				<view class="list_title">
 					<text>{{item.title}}</text>
 				</view>
@@ -95,14 +95,14 @@
 					},
 				})
 			},
-			bestStaff(type) {
+			bestStaff(type,id,topid) {
 				if (type == 1) {
 					uni.navigateTo({
-						url: '../bestStaff/bestStaff'
+						url: '../bestStaff/bestStaff?id='+id+'&topid='+topid
 					})
 				} else {
 					uni.navigateTo({
-						url: '../assessmentStall/assessmentStall'
+						url: '../assessmentStall/assessmentStall?id='+id+'&topid='+topid
 					})
 				}
 

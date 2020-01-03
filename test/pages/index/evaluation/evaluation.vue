@@ -9,70 +9,18 @@
 			</view>
 
 			<view class="evaluation_box">
-				<view class="evaluation_list flex border_bottom" @tap="all = !all">
-					<text class="list_name">设计部门</text>
-					<view class="flex">
-						<text>未完成</text>
-						<image src="../../../static/img/triangle.png" mode="aspectFit"></image>
-					</view>
-				</view>
-				<view class="all_name" v-show="all">
-					<view class="name_box flex border_bottom" @tap="user">
-						<text class="list_name">秦泷</text>
+				<view class="all_name">
+					<view class="name_box flex border_bottom" @tap="user(index)" v-for="(item,index) in list" :key="index">
+						<text class="list_name">{{item.examineeName}}</text>
 						<view class="flex">
-							<text>未完成</text>
+							<text v-if="item.score == '' || item.score == null">未完成</text>
+							<text v-else class="scope">{{item.score}}</text>
 							<uni-icons type="arrowright" size="20"></uni-icons>
 						</view>
 					</view>
-					<view class="name_box flex border_bottom">
-						<text class="list_name">湘不语</text>
-						<view class="flex">
-							<text class="scope">93</text>
-							<uni-icons type="arrowright" size="20"></uni-icons>
-						</view>
-					</view>
-					<view class="name_box flex border_bottom">
-						<text class="list_name">隆傲</text>
-						<view class="flex">
-							<text class="scope">93</text>
-							<uni-icons type="arrowright" size="20"></uni-icons>
-						</view>
 					</view>
 				</view>
 
-			</view>
-
-			<view class="evaluation_box">
-				<view class="evaluation_list flex border_bottom" @tap="all1 = !all1">
-					<text class="list_name">人事部门</text>
-					<view class="flex">
-						<text class="complete">已完成</text>
-						<image src="../../../static/img/triangle.png" mode="aspectFit"></image>
-					</view>
-				</view>
-				<view class="all_name" v-show="all1">
-					<view class="name_box flex border_bottom">
-						<text class="list_name">秦泷</text>
-						<view class="flex">
-							<text class="scope">93</text>
-							<uni-icons type="arrowright" size="20"></uni-icons>
-						</view>
-					</view>
-					<view class="name_box flex border_bottom">
-						<text class="list_name">湘不语</text>
-						<view class="flex">
-							<text class="scope">93</text>
-							<uni-icons type="arrowright" size="20"></uni-icons>
-						</view>
-					</view>
-					<view class="name_box flex border_bottom">
-						<text class="list_name">隆傲</text>
-						<view class="flex">
-							<text class="scope">93</text>
-							<uni-icons type="arrowright" size="20"></uni-icons>
-						</view>
-					</view>
-				</view>
 			</view>
 
 			<view class="staff_btn">
@@ -86,23 +34,77 @@
 </template>
 
 <script>
+	import topsService from '@/api/topies.js'
 	export default {
 		data() {
 			return {
 				titles: '员工考评',
-				all:false,
-				all1:false,
+				id:'',
+				topid:'',
+				list:[],
 			};
 		},
+		onLoad(option) {
+			this.id = option.id || '';
+			this.topid = option.topid || '';
+			this.getAssessments()
+		},
 		methods: {
-			sure() {
-				uni.switchTab({
-					url: '/pages/index/index'
-				});
+			getAssessments(){
+				topsService.getAssessment({
+					dept_id:this.id,
+					topic_id:this.topid,
+					success:res=>{
+						console.log(res)
+						if(res.statusCode == 200 && res.data.code == 0){
+							this.list = res.data.topic.examineeList;
+							uni.setStorage({
+								key:'assessment',
+								data:res.data.topic
+							})
+						}
+					},
+					fail:err=>{
+						console.log(err)
+					},
+					complete:res=>{
+						console.log(res)
+					}
+				})
 			},
-			user() {
+			sure() {
+				topsService.getAllAssessment({
+					dept_id:this.id,
+					topic_id:this.topid,
+					success:res=>{
+						console.log(res)
+						if(res.statusCode == 200 && res.data.code == 0){
+							uni.switchTab({
+								url: '/pages/index/index'
+							});
+							
+						}else{
+							uni.showToast({
+								title:res.data.msg,
+								icon:"none",
+								position:'bottom',
+								duration:3000,
+							})
+						}
+					},
+					fail:err=>{
+						console.log(err)
+					},
+					complete:res=>{
+						console.log(res)
+					}
+				})
+				
+				
+			},
+			user(index) {
 				uni.navigateTo({
-					url: '/pages/index/staffAppraisal/staffAppraisal'
+					url: '/pages/index/staffAppraisal/staffAppraisal?id='+this.id+'&topid='+this.topid+'&index='+index
 				})
 			},
 		},
@@ -130,41 +132,6 @@
 			.evaluation_box {
 				margin-bottom: 8px;
 
-				.evaluation_list {
-					width: 100%;
-					padding: 12px 26px 12px 16px;
-					justify-content: space-between;
-					align-content: center;
-					align-items: center;
-					background: #FFFFFF;
-
-
-					.list_name {
-						color: #303132;
-						font-size: $font-size16;
-					}
-
-					view {
-						justify-content: space-between;
-						align-content: center;
-						align-items: center;
-
-						image {
-							width: 6px;
-							height: 10px;
-							margin-left: 10px;
-						}
-
-						text {
-							color: #BFC2CA;
-							font-size: $font-size16;
-						}
-
-						.complete {
-							color: #54D29B;
-						}
-					}
-				}
 
 				.all_name {
 					.name_box {
@@ -201,25 +168,26 @@
 			}
 
 
-			.staff_btn {
-				width: 100%;
+			
+		}
+		.staff_btn {
+			width: 100%;
+			padding: 9px 0;
+			position: fixed;
+			bottom: 0;
+			left: 0;
+			background: #FFFFFF;
+			border-top: 1px solid #EDEFF1;
+		
+			.btn {
+				margin: 0 auto;
+				width: 90%;
+				background-color: #3D82FF;
 				padding: 9px 0;
-				position: fixed;
-				bottom: 0;
-				left: 0;
-				background: #FFFFFF;
-				border-top: 1px solid #EDEFF1;
-
-				.btn {
-					margin: 0 auto;
-					width: 90%;
-					background-color: #3D82FF;
-					padding: 9px 0;
-					font-size: $font-size16;
-					color: #FFFFFF;
-					text-align: center;
-					border-radius: 0.25rem;
-				}
+				font-size: $font-size16;
+				color: #FFFFFF;
+				text-align: center;
+				border-radius: 0.25rem;
 			}
 		}
 	}

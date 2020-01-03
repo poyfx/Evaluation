@@ -34,7 +34,7 @@
 
 			</view>
 			<view class="info_btn">
-				<view>
+				<view @tap="logout">
 					退出登录
 				</view>
 			</view>
@@ -43,30 +43,55 @@
 </template>
 
 <script>
-	import {
-		mapState
-	} from 'vuex'
-
 	export default {
 		data() {
 			return {
-				titles: '我的'
+				titles: '我的',
+				realname:'',
+				mobile:'',
+				position:[],
 			};
 		},
 		onShow() {
-			console.log(this.position)
+			this.getinfo()
 		},
 
 		methods: {
-
+			getinfo(){
+				try {
+				    const value = uni.getStorageSync('user');
+				    if (value) {
+				        console.log(value);
+						this.realname = value.realname;
+						this.mobile = value.mobile;
+						this.position = value.positionList
+				    }
+				} catch (e) {
+				    // error
+				}
+			},
+			logout(){
+				uni.showModal({
+					title:'提示',
+					content:'确认退出？',
+					success: function (res) {
+					        if (res.confirm) {
+					           uni.clearStorage()
+					           uni.navigateTo({
+					           	url:'../login/login'
+					           })
+					        } else if (res.cancel) {
+					            console.log('用户点击取消');
+					        }
+					    }
+				})
+			
+			},
 			gohistory() {
 				uni.navigateTo({
 					url: '/pages/info/evaluationHistory/evaluationHistory'
 				})
 			},
-		},
-		computed: {
-			...mapState(['mobile', 'position', 'realname'])
 		},
 	}
 </script>

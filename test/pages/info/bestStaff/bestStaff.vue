@@ -9,22 +9,19 @@
 				</view>
 				<view class="list_box  flex" >
 					<view>范围：</view>
-					<text class="allcompany">全公司</text>
+					<text class="allcompany">{{list.deptName}}</text>
 				</view>
 			</view>
 			<view class="bast_choose">
 				<view class="choose_title">
 					您此次投票选择的是：
 				</view>
-				<view class="choose_content flex">
-					<text>【战略营销部】</text>
-					<text>【市场开发部】</text>
-					<text>【总经理办公室（行政服务中心）】</text>
-					<text>【董事会办公室】</text>
+				<view class="choose_content flex" v-for="(item, index) in chooseList" :key="index">
+					<text>{{item.title}}</text>
 				</view>
 			</view>
 			<view class="bast_time">
-				<text>提交时间 &nbsp;&nbsp;2019-112-27 &nbsp;&nbsp;20：00</text>
+				<text>提交时间 &nbsp;&nbsp;{{list.createTime}}</text>
 			</view>
 			<view class="staff_btn">
 				<view class="btn" @tap="sure">
@@ -36,13 +33,42 @@
 </template>
 
 <script>
+	import topsService from '@/api/topies.js'
 	export default {
 		data() {
 			return {
-				titles: '优秀员工评选'
+				titles: '优秀员工评选',
+				id:'',
+				topid:'',
+				list:'',
+				chooseList:[],
 			};
 		},
+		onLoad(option) {
+			this.id = option.id;
+			this.topid = option.topid;
+			this.getHistoryList();
+		},
 		methods:{
+			getHistoryList() {
+				topsService.getHistoryList({
+					dept_id:this.topid,
+					topic_id:this.id,
+					success: res => {
+						console.log(res)
+						if (res.statusCode == 200 && res.data.code == 0) {
+							this.list = res.data.topic
+							this.chooseList = this.list.optionList
+						}
+					},
+					fail: err => {
+						console.log(err)
+					},
+					complete: res => {
+						console.log(res)
+					},
+				})
+			},
 			sure(){
 				uni.navigateBack({
 					delta:1

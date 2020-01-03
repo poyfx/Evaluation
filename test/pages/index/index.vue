@@ -82,7 +82,7 @@ this.getTops()
 			getTops(){
 				topsService.getTopies({
 					success:res=>{
-						console.log(res)
+						
 						if(res.statusCode == 200 && res.data.code == 0){
 							this.list = res.data.topicList
 						}
@@ -103,7 +103,7 @@ this.getTops()
 					})
 				}else{//考核
 					uni.navigateTo({
-						url:'./evaluation/evaluation'
+						url:'./evaluation/evaluation?id='+topid +'&topid='+id
 					})
 				}
 			

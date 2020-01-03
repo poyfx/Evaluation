@@ -48,7 +48,7 @@ test.interceptor.response((response) => { /* 请求之后拦截器 */
 const http = new Request()
 
 http.setConfig((config) => { /* 设置全局配置 */
-  config.baseUrl = 'http://192.168.0.156:9999/' /* 根域名不同 */
+  config.baseUrl = 'http://192.168.0.99:9999/' /* 根域名不同 */
   config.header = {
     ...config.header,
 	Token:token,
