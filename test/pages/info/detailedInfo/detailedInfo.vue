@@ -6,13 +6,13 @@
 				<view class="list_title flex">
 					<view class="list_left">
 						{{index+1}}、{{item.title}}
-						<text>（权重{{item.weight}}%）</text>
+						<!-- <text>（权重{{item.weight}}%）</text> -->
 					</view>
 
 				</view>
-				<view class="list_content">
+				<!-- <view class="list_content">
 					<text>{{item.content}}</text>
-				</view>
+				</view> -->
 				<view class="list_score flex">
 					<text>评分：</text>
 					<view>
@@ -34,7 +34,7 @@
 	export default {
 		data() {
 			return {
-				titles: '员工考评',
+				titles: '民主测评',
 				num: '',
 				list: [],
 				examineeList:[],
@@ -52,13 +52,16 @@
 				this.actives = true
 			},
 			getAssessments() {
-				const assessment = uni.getStorageSync('assessment')
+				const assessment = uni.getStorageSync('assessments')
 				try {
 					if (assessment) {
-						console.log(assessment.examineeList)
+						console.log(assessment)
 						this.list = assessment.optionList;
+						
+					
 						this.examineeList = assessment.examineeList[this.num].options.split(',');
-						console.log(this.examineeList )
+						
+						this.titles = assessment.title
 							
 					}
 				} catch (e) {

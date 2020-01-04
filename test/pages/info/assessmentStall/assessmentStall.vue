@@ -5,40 +5,26 @@
 			<view class="list_type flex">
 				<view class="list_box flex">
 					<view>类型：</view>
-					<text class="assessment">考核</text>
+					<text class="assessment">民主测评</text>
 				</view>
-				<view class="list_box  flex">
+				<!-- <view class="list_box  flex">
 					<view>范围：</view>
-					<text class="allcompany">全公司</text>
-				</view>
+					<text class="allcompany">{{deptName}}</text>
+				</view> -->
 			</view>
 			<view class="aStall_choose">
-				<view class="choose_title">
+				<!-- <view class="choose_title">
 					您对此次考核的评分为：
-				</view>
+				</view> -->
 				<view class="evaluation_box">
 					<view class="all_name" >
 						<view class="name_box flex border_bottom" @tap="detailed(index)" v-for="(item,index) in list" :key="index">
 							<text class="list_name">{{item.examineeName}}</text>
 							<view class="flex">
-								总分：<text class="scope">{{item.score}}</text>
+								<!-- 总分：<text class="scope">{{item.score}}</text> -->
 								<uni-icons type="arrowright" size="20"></uni-icons>
 							</view>
 						</view>
-						<!-- <view class="name_box flex border_bottom">
-							<text class="list_name">湘不语</text>
-							<view class="flex">
-								总分：<text class="scope">93</text>
-								<uni-icons type="arrowright" size="20"></uni-icons>
-							</view>
-						</view>
-						<view class="name_box flex border_bottom">
-							<text class="list_name">隆傲</text>
-							<view class="flex">
-								总分：<text class="scope">93</text>
-								<uni-icons type="arrowright" size="20"></uni-icons>
-							</view>
-						</view> -->
 					</view>
 
 				</view>
@@ -57,10 +43,11 @@
 	export default {
 		data() {
 			return {
-				titles: '员工考核互评',
+				titles: '民主测评',
 				id:'',
 				topid:'',
 				list:[],
+				deptName:'',
 			};
 		},
 		onLoad(option) {
@@ -77,6 +64,8 @@
 						console.log(res)
 						if(res.statusCode == 200 && res.data.code == 0){
 							this.list = res.data.topic.examineeList;
+							this.titles = res.data.topic.title;
+							this.deptName = res.data.topic.deptName || '';
 							uni.setStorage({
 								key:'assessments',
 								data:res.data.topic
@@ -110,14 +99,14 @@
 		padding-bottom: 58px;
 		.aStall_content {
 			.list_type {
-				justify-content: space-between;
+				justify-content: center;
 				margin: 16px;
 				background: #FFFFFF;
 				padding: 16px 0;
 				border-radius: 8px;
 
 				.list_box {
-					width: 50%;
+					// width: 50%;
 					justify-content: center;
 					align-content: center;
 					align-items: center;
@@ -143,7 +132,7 @@
 			}
 
 			.aStall_choose {
-				padding: 16px 16px 0;
+				padding: 0px 16px 0;
 				background: #FFFFFF;
 				margin-bottom: 16px;
 

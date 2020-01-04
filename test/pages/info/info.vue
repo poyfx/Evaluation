@@ -12,7 +12,7 @@
 					<text>{{mobile}}</text>
 				</view>
 			</view>
-			<view class="info_position">
+			<!-- <view class="info_position">
 				<view class="position">
 					公司职位：
 				</view>
@@ -24,7 +24,7 @@
 					<text>{{item.deptName}}</text>
 					<text>{{item.position}}</text>
 				</view>
-			</view>
+			</view> -->
 
 			<view class="info_list">
 				<view class="list_history  flex" @tap="gohistory">
@@ -53,6 +53,7 @@
 			};
 		},
 		onShow() {
+				console.log(1)
 			this.getinfo()
 		},
 
@@ -76,7 +77,10 @@
 					content:'确认退出？',
 					success: function (res) {
 					        if (res.confirm) {
-					           uni.clearStorage()
+					           uni.clearStorage();
+							   // uni.removeStorage({
+							   // 	key:'token'
+							   // })
 					           uni.navigateTo({
 					           	url:'../login/login'
 					           })

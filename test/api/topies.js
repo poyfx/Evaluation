@@ -1,6 +1,7 @@
 import {
 	http
 } from "@/utils/request/index.js"
+
 export default {
 	getTopies({
 		success,
@@ -8,6 +9,9 @@ export default {
 		complete
 	}) {
 		http.get('app/topic/get_topics', {
+			header:{
+				
+			},
 			success: res => {
 				success && success(res)
 			},
@@ -26,6 +30,7 @@ export default {
 		complete
 	}) {
 		http.get('app/topic/get_topics_his', {
+			
 			success: res => {
 				success && success(res)
 			},
@@ -51,6 +56,7 @@ export default {
 				deptId: dept_id,
 				topicId: topic_id
 			},
+			
 			success: res => {
 				success && success(res)
 			},
@@ -77,6 +83,7 @@ export default {
 			topicId: topic_id,
 			options: options
 		}, {
+			
 			success: res => {
 				success && success(res)
 			},
@@ -102,6 +109,7 @@ export default {
 				deptId: dept_id,
 				topicId: topic_id,
 			},
+			
 			success: res => {
 				success && success(res)
 			},
@@ -126,6 +134,7 @@ export default {
 				deptId: dept_id,
 				topicId: topic_id,
 			},
+			
 			success: res => {
 				success && success(res)
 			},
@@ -153,6 +162,7 @@ export default {
 			examinee: examinee,
 			options: options,
 		}, {
+			
 			success: res => {
 				success && success(res)
 			},
@@ -177,7 +187,7 @@ export default {
 			deptId: dept_id,
 			topicId: topic_id,
 		}, {
-
+			
 			success: res => {
 				success && success(res)
 			},

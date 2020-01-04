@@ -15,6 +15,7 @@ const store = new Vuex.Store({
 		//
 		setToken(state,token){
 			state.token = token
+			
 			uni.setStorage({
 				key:'token',
 				data:token,

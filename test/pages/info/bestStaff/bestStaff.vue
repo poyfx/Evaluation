@@ -7,10 +7,10 @@
 					<view>类型：</view>
 					<text class="ticket">投票</text>
 				</view>
-				<view class="list_box  flex" >
+				<!-- <view class="list_box  flex" >
 					<view>范围：</view>
 					<text class="allcompany">{{list.deptName}}</text>
-				</view>
+				</view> -->
 			</view>
 			<view class="bast_choose">
 				<view class="choose_title">
@@ -37,7 +37,7 @@
 	export default {
 		data() {
 			return {
-				titles: '优秀员工评选',
+				titles: '',
 				id:'',
 				topid:'',
 				list:'',
@@ -58,7 +58,8 @@
 						console.log(res)
 						if (res.statusCode == 200 && res.data.code == 0) {
 							this.list = res.data.topic
-							this.chooseList = this.list.optionList
+							this.chooseList = this.list.optionList;
+							this.titles = res.data.topic.title;
 						}
 					},
 					fail: err => {
@@ -83,7 +84,7 @@
 	padding-bottom: 58px;
 	.bast_content{
 		.list_type {
-			justify-content: space-between;
+			justify-content: center;
 			margin: 16px;
 			background: #FFFFFF;
 			padding: 16px 0;

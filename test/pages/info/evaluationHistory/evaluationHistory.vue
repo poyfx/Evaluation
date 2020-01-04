@@ -10,55 +10,18 @@
 					<view class="list_box flex">
 						<view>类型：</view>
 						<text class="ticket" v-show="item.type==1">投票</text>
-						<text class="assessment" v-show="item.type==2">考核</text>
+						<text class="assessment" v-show="item.type==2">民主测评</text>
 					</view>
-					<view class="list_box  flex" style="justify-content: flex-end;">
+					<!-- <view class="list_box  flex" style="justify-content: flex-end;">
 						<view>范围：</view>
 						<text class="allcompany">{{item.deptName}}</text>
-					</view>
+					</view> -->
 				</view>
 				<view class="list_time flex">
-					<text>提交时间 &nbsp;&nbsp;2019-112-27 &nbsp;&nbsp;20：00</text>
+					<text>提交时间 {{item.createTime}}</text>
 				</view>
 			</view>
 
-			<!-- <view class="index_list" @tap="assessmentStall">
-				<view class="list_title">
-					<text>2019年员工考核互评</text>
-				</view>
-				<view class="list_type flex">
-					<view class="list_box flex">
-						<view>类型：</view>
-						<text class="assessment">考核</text>
-					</view>
-					<view class="list_box  flex" style="justify-content: flex-end;">
-						<view>范围：</view>
-						<text class="allcompany">全公司</text>
-					</view>
-				</view>
-				<view class="list_time flex">
-					<text>提交时间 &nbsp;&nbsp;2019-112-27 &nbsp;&nbsp;20：00</text>
-				</view>
-			</view>
-			
-			<view class="index_list" >
-				<view class="list_title">
-					<text>2019年员工考核他评</text>
-				</view>
-				<view class="list_type flex">
-					<view class="list_box flex">
-						<view>类型：</view>
-						<text class="assessment">考核</text>
-					</view>
-					<view class="list_box  flex" style="justify-content: flex-end;">
-						<view>范围：</view>
-						<text class="allcompany">全公司</text>
-					</view>
-				</view>
-				<view class="list_time flex">
-					<text>提交时间 &nbsp;&nbsp;2019-112-27 &nbsp;&nbsp;20：00</text>
-				</view>
-			</view> -->
 			<view class="nomore flex">
 				没有更多了
 			</view>
@@ -129,11 +92,12 @@
 				}
 
 				.list_type {
-					justify-content: space-between;
+					justify-content:center;
 					margin-bottom: 12px;
 
 					.list_box {
-						width: 50%;
+						// width: 50%;
+							// justify-content: center;
 						align-content: center;
 						align-items: center;
 						font-size: $font-size14;
@@ -160,7 +124,7 @@
 				.list_time {
 					color: #BFC2CA;
 					font-size: $font-size12;
-					justify-content: flex-start;
+					justify-content: center;
 				}
 			}
 

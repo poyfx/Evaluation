@@ -6,20 +6,20 @@
 				<view class="list_title flex">
 					<view class="list_left">
 						{{index+1}}、{{item.title}}
-						<text>（权重{{item.weight}}%）</text>
+						<!-- <text>（权重{{item.weight}}%）</text> -->
 					</view>
-					<text class="scores">已评分</text>
-					<text class="score">未评分</text>
+					<text class="scores" v-if="chooselist[index]>0">已评分</text>
+					<text class="score" v-else>未评分</text>
 				</view>
-				<view class="list_content">
+				<!-- <view class="list_content">
 					<text>{{item.content}}</text>
-				</view>
+				</view> -->
 				<view class="list_score flex">
-					<text>评分：</text>
-					<radio-group class="flex" @change="radioChange">
+					<!-- <text>评分：</text> -->
+					<radio-group class="flex" @change="radioChange" @tap="choose(index)">
 						<label class="flex" v-for="item in items" :key="item.value">
 							<view>
-								<radio :value="item.value" :checked="option[index] == item.value" @tap="choose(index)" />
+								<radio :value="item.value" :checked="option[index] == item.value" />
 							</view>
 							<view>{{item.name}}</view>
 						</label>
@@ -28,12 +28,12 @@
 			</view>
 
 			<view class="staff_btn">
-				<view class="btn" @tap="sure" v-show="show">
-					保存
+				<view class="btn" @tap="sure" >
+					提交
 				</view>
-				<view class="btn" @tap="back" v-show="!show">
+				<!-- <view class="btn" @tap="back" v-show="!show">
 					返回
-				</view>
+				</view> -->
 			</view>
 		</view>
 	</view>
@@ -44,31 +44,31 @@
 	export default {
 		data() {
 			return {
-				titles: '员工考评',
-
-				items: [{
-						value: '20',
-						name: '很差',
-						checked: false
-					},
+				titles: '',
+				items: [
 					{
-						value: '40',
-						name: '不及格',
-						checked: false
-					},
-					{
-						value: '60',
-						name: '及格',
+						value: '100',
+						name: '优',
 						checked: false
 					},
 					{
 						value: '80',
-						name: '良好',
+						name: '良',
 						checked: false
 					},
 					{
-						value: '100',
-						name: '优秀',
+						value: '60',
+						name: '一般',
+						checked: false
+					},
+					{
+						value: '50',
+						name: '较差',
+						checked: false
+					},
+					{
+						value: '10',
+						name: '差',
 						checked: false
 					},
 				],
@@ -94,10 +94,9 @@
 
 		methods: {
 			radioChange: function(e) {
-
 				this.content = e.target.value
-
-
+				// this.chooselist.splice(this.idx, 1, this.content)
+				// console.log(this.chooselist)
 			},
 			choose(idx) {
 				this.idx = idx
@@ -110,23 +109,22 @@
 					if (assessment) {
 						console.log(assessment)
 						this.list = assessment.optionList;
+						this.titles = assessment.title
 						this.examineeList = assessment.examineeList;
-							this.chooselist.length = this.list.length;
+						this.chooselist.length = this.list.length;
 					}
 				} catch (e) {
 					//TODO handle the exception
 				}
-		
+
 			},
 			examineeLists() {
 				if (this.examineeList[this.num].score == null) {
 					console.log(this.examineeList[this.num].score)
-					console.log(1)
-
+					
 					this.show = true;
 					// if()
 				} else {
-					console.log(2)
 					this.option = this.examineeList[this.num].options.split(",");
 					this.show = false;
 
@@ -140,33 +138,62 @@
 				this.actives = false
 			},
 			sure() {
-				const option = String(this.chooselist)
-				topsService.getOneAssessment({
-					dept_id: this.id,
-					topic_id: this.topid,
-					examinee: this.examineeList[this.num].examinee,
-					options: option,
-					success: res => {
-						console.log(res)
-						if (res.statusCode == 200 && res.data.code == 0) {
-							uni.switchTab({
-								url: '/pages/index/index'
-							});
-						} else {
-							uni.showModal({
-								title: '提示',
-								content: res.data.msg,
-							})
-						}
-					},
-					fail: err => {
-						console.log(err)
-					},
-					complete: res => {
-						console.log(res)
-					}
-
+				const arr = [];
+				console.log(this.chooselist)
+				this.chooselist.map(el=>{
+						arr.push(el)
 				})
+				if(arr.length != this.chooselist.length){
+					uni.showToast({
+						title:'请给全部投票完成后再提交',
+						icon:'none',
+						position:'bottom',
+						duration:3000,
+					})
+				}else{
+					const option = String(this.chooselist)
+					uni.showModal({
+						title: '提示',
+						content: '是否确认？提交后不可修改。',
+						success: res => {
+							if (res.confirm) {
+								
+								topsService.getOneAssessment({
+									dept_id: this.id,
+									topic_id: this.topid,
+									examinee: this.examineeList[this.num].examinee,
+									options: option,
+									success: res => {
+										console.log(res)
+										if (res.statusCode == 200 && res.data.code == 0) {
+											uni.switchTab({
+												url:'../index'
+											})
+											// uni.redirectTo({
+											// 	url: '../evaluation/evaluation?id=' + this.id + '&topid=' + this.topid
+					
+											// })
+										} else {
+											uni.showModal({
+												title: '提示',
+												content: res.data.msg,
+											})
+										}
+									},
+									fail: err => {
+										console.log(err)
+									},
+									complete: res => {
+										console.log(res)
+									}
+					
+								})
+							 }
+						}
+					})
+					
+				}
+				
 
 
 
@@ -225,23 +252,25 @@
 				}
 
 				.list_score {
-					justify-content: flex-end;
+					// justify-content: flex-start;
 					align-content: center;
 					align-items: center;
-
+					
 					text {
 						font-size: $font-size16;
 						color: #303132;
-						margin-right: 4px;
+						// margin-right: 4px;
 					}
 
 					radio-group {
+						width: 100%;
+						justify-content: space-between;
 						label {
 							align-content: center;
 							align-items: center;
 
 							radio {
-								transform: scale(0.5);
+								transform: scale(0.6);
 							}
 						}
 					}

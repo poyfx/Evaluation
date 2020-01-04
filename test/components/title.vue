@@ -33,8 +33,11 @@
 		},
 		methods: {
 			back() {
+				// uni.switchTab({
+				//     url: '/pages/index/index'
+				// });
 				uni.navigateBack({
-					delta: 1
+					delta:1
 				})
 			},
 		},

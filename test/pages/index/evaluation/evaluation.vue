@@ -2,11 +2,11 @@
 	<view class="evaluation">
 		<titles :titles="titles" :showIcon="true"></titles>
 		<view class="evaluation_content">
-			<view class="evaluation_tips">
+			<!-- <view class="evaluation_tips">
 				<view class="tips_bg">
 					<text>请完成所有人考评后，一次性提交</text>
 				</view>
-			</view>
+			</view> -->
 
 			<view class="evaluation_box">
 				<view class="all_name">
@@ -14,7 +14,7 @@
 						<text class="list_name">{{item.examineeName}}</text>
 						<view class="flex">
 							<text v-if="item.score == '' || item.score == null">未完成</text>
-							<text v-else class="scope">{{item.score}}</text>
+							<text v-else class="scope">已完成</text><!-- {{item.score}} -->
 							<uni-icons type="arrowright" size="20"></uni-icons>
 						</view>
 					</view>
@@ -23,11 +23,11 @@
 
 			</view>
 
-			<view class="staff_btn">
+			<!-- <view class="staff_btn">
 				<view class="btn" @tap="sure">
 					提交
 				</view>
-			</view>
+			</view> -->
 		</view>
 	</view>
 
@@ -38,7 +38,7 @@
 	export default {
 		data() {
 			return {
-				titles: '员工考评',
+				titles: '',
 				id:'',
 				topid:'',
 				list:[],
@@ -58,6 +58,7 @@
 						console.log(res)
 						if(res.statusCode == 200 && res.data.code == 0){
 							this.list = res.data.topic.examineeList;
+							this.titles = res.data.topic.title
 							uni.setStorage({
 								key:'assessment',
 								data:res.data.topic
@@ -73,32 +74,41 @@
 				})
 			},
 			sure() {
-				topsService.getAllAssessment({
-					dept_id:this.id,
-					topic_id:this.topid,
+				uni.showModal({
+					title:'提示',
+					content:'是否确认提交？',
 					success:res=>{
-						console.log(res)
-						if(res.statusCode == 200 && res.data.code == 0){
-							uni.switchTab({
-								url: '/pages/index/index'
-							});
-							
-						}else{
-							uni.showToast({
-								title:res.data.msg,
-								icon:"none",
-								position:'bottom',
-								duration:3000,
+						if(res.confirm){
+							topsService.getAllAssessment({
+								dept_id:this.id,
+								topic_id:this.topid,
+								success:res=>{
+									console.log(res)
+									if(res.statusCode == 200 && res.data.code == 0){
+										uni.switchTab({
+											url: '/pages/index/index'
+										});
+										
+									}else{
+										uni.showToast({
+											title:res.data.msg,
+											icon:"none",
+											position:'bottom',
+											duration:3000,
+										})
+									}
+								},
+								fail:err=>{
+									console.log(err)
+								},
+								complete:res=>{
+									console.log(res)
+								}
 							})
 						}
-					},
-					fail:err=>{
-						console.log(err)
-					},
-					complete:res=>{
-						console.log(res)
 					}
 				})
+				
 				
 				
 			},
@@ -130,7 +140,7 @@
 			}
 
 			.evaluation_box {
-				margin-bottom: 8px;
+				margin:10px 0 8px;
 
 
 				.all_name {

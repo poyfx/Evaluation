@@ -66,7 +66,7 @@
 		
 		data() {
 			return {
-				titles: '优秀员工评选',
+				titles: '',
 				value: [],//页面显示list
 				model:false,
 				confirm:true,//是否显示
@@ -102,6 +102,7 @@
 							this.content.remark = data.remark || '';
 							this.titles = data.title || '',
 							this.value = data.optionList || '';
+							this.titles = res.data.topic.title
 						}
 					},
 					fail:err=>{

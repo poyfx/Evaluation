@@ -2,7 +2,7 @@
 	<view class="login">
 		<view class="login_content">
 			<view class="login_title flex">
-				<text>测评系统</text>
+				<text>皖天然气测评系统</text>
 			</view>
 			<view class="login_number">
 				<view><input type="text" placeholder="手机号" v-model="phone" /></view>
@@ -39,9 +39,6 @@
 				phone: '',
 				code: '',
 			};
-		},
-		computed:{
-			...mapState(['token'])
 		},
 		methods: {
 			//获取验证码
@@ -165,7 +162,7 @@
 				align-items: center;
 
 				text {
-					font-size: 2.6rem;
+					font-size: 1.8rem;
 					color: #FFFFFF;
 					letter-spacing: 2px;
 					font-weight: 550;
